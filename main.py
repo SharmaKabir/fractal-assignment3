@@ -2,7 +2,6 @@ from pathlib import Path
 
 from application.request_service import RequestService
 from domain.exceptions import (
-    DuplicateRequestIdError,
     InvalidMenuChoiceError,
     InvalidPriorityError,
     RequestAlreadyResolvedError,
@@ -34,15 +33,11 @@ def get_menu_choice():
 
 
 def create_request(service):
-    request_id = input("Enter Request ID: ").strip()
     employee_name = input("Enter Employee Name: ").strip()
     issue = input("Enter Issue: ").strip()
     priority = input("Enter Priority: ").strip()
-    try:
-        service.create_request(request_id, employee_name, issue, priority)
-        print("Service Request created successfully.")
-    except DuplicateRequestIdError as error:
-        print(f"Error: {error}")
+    created = service.create_request(employee_name, issue, priority)
+    print(f"Service Request {created.request_id} created successfully.")
 
 
 def view_requests(service):
@@ -60,6 +55,8 @@ def search_request(service):
         print_request(service.search_request(request_id))
     except RequestNotFoundError:
         print("Request not found")
+    except ValueError as error:
+        print(f"Error: {error}")
 
 
 def resolve_request(service):
@@ -70,6 +67,8 @@ def resolve_request(service):
     except RequestNotFoundError:
         print("Request not found")
     except RequestAlreadyResolvedError as error:
+        print(f"Error: {error}")
+    except ValueError as error:
         print(f"Error: {error}")
 
 

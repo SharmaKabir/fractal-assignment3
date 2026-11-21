@@ -8,7 +8,14 @@ class ServiceRequest:
     VALID_STATUSES = ("OPEN", "RESOLVED")
 
     def __init__(self, request_id, employee_name, issue, priority, status="OPEN"):
-        self.request_id = self._required_text(request_id, "Request ID")
+        try:
+            normalized_request_id = int(request_id)
+        except (TypeError, ValueError) as error:
+            raise ValueError("Request ID must be a positive number") from error
+        if normalized_request_id < 1:
+            raise ValueError("Request ID must be a positive number")
+        self.request_id = normalized_request_id
+
         self.employee_name = self._required_text(employee_name, "Employee Name")
         self.issue = self._required_text(issue, "Issue")
 
