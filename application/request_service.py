@@ -13,20 +13,20 @@ class RequestService:
     def _load_requests(self):
         for data in self.repository.load():
             request = ServiceRequest.from_dict(data)
-            self.requests[request.request_id.upper()] = request
+            self.requests[request.request_id] = request
 
     def _save_requests(self):
         self.repository.save([request.to_dict() for request in self.requests.values()])
 
-    def create_request(self, request_id, employee_name, issue, priority):
-        request_id = request_id.strip().upper()
+    def create_request(self, employee_name, issue, priority):
+        request_id = max(self.requests, default=0) + 1
         if request_id in self.requests:
             raise DuplicateRequestIdError(
                 f"Request ID {request_id} already exists"
             )
 
         request = ServiceRequest(request_id, employee_name, issue, priority)
-        self.requests[request.request_id.upper()] = request
+        self.requests[request.request_id] = request
         self._save_requests()
         return request
 
@@ -34,7 +34,14 @@ class RequestService:
         return list(self.requests.values())
 
     def search_request(self, request_id):
-        key = request_id.strip().upper()
+        try:
+            key = int(str(request_id).strip())
+        except (TypeError, ValueError) as error:
+            raise ValueError("Request ID must be a positive number") from error
+
+        if key < 1:
+            raise ValueError("Request ID must be a positive number")
+
         request = self.requests.get(key)
         if request is None:
             raise RequestNotFoundError(f"Request {key} not found")
@@ -42,6 +49,6 @@ class RequestService:
 
     def resolve_request(self, request_id):
         request = self.search_request(request_id)
-        request.resolve()  # OPEN -> RESOLVED belongs in the domain model
+        request.resolve()
         self._save_requests()
         return request

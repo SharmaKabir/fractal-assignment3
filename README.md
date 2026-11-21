@@ -4,10 +4,10 @@ A Python CLI application for creating, viewing, searching, and resolving employe
 
 ## Implemented Features
 
-- Create a service request with an ID, employee name, issue, and priority
-- Prevent duplicate Request IDs
+- Create a service request with an automatically assigned numeric Request ID: `1`, `2`, `3`, and so on
+- Enter only the employee name, issue, and priority when creating a request
 - View all saved requests
-- Search by Request ID
+- Search by numeric Request ID
 - Resolve an open request and persist the updated status
 - Prevent resolving an already resolved request
 - Safely load missing or empty JSON data
@@ -16,7 +16,7 @@ A Python CLI application for creating, viewing, searching, and resolving employe
 ## Concepts Used
 
 - **OOP:** `ServiceRequest` constructor, attributes, serialization, and `resolve()` behavior
-- **Exception handling:** custom exceptions for duplicate IDs, missing requests, invalid priorities, invalid menu choices, and already resolved requests
+- **Exception handling:** custom exceptions for missing requests, invalid priorities, invalid menu choices, and already resolved requests
 - **File handling:** JSON loading and saving in `data/requests.json`
 - **SOLID:** responsibilities are separated and `RequestService` depends on repository behavior rather than opening files itself
 - **DDD:** domain, application, infrastructure, and presentation layers
@@ -52,11 +52,11 @@ Use the menu to create, view, search, and resolve service requests.
 
 ## Persistence Demonstration
 
-1. Create `SR101` with priority `HIGH`.
-2. Exit using menu option `5`.
-3. Restart with `python main.py`.
-4. Search for `SR101` and resolve it.
-5. Exit and restart again; the resolved status will remain saved.
+1. Select menu option `1` to create a request; the app automatically assigns the next numeric ID.
+2. View all requests using menu option `2`.
+3. Search for a request using its numeric ID, for example `1`.
+4. Resolve request `1` using menu option `4`.
+5. Exit using menu option `5`, restart the app, and search for `1` to confirm its `RESOLVED` status persisted.
 
 ## Git Branch and Merge Workflow
 
